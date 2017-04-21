@@ -32,15 +32,17 @@ public class Utils {
 	
 	public static void reWritePageList(String parentFolderPath,int listNumber,List<Map<String,Object>> data){
 		File parentFolder = new File(parentFolderPath);
-		if( !parentFolder.exists() ) parentFolder.mkdirs(); 
 		
+		FileUtil.removeAllFiles(parentFolderPath, false);
+		if( !parentFolder.exists() ) parentFolder.mkdirs();
 		if(listNumber == 0){ //不分页
 			FileUtil.writeFile(parentFolderPath + File.separator + "1", data);
 		}else{
 			for( int page=0;page * listNumber <= data.size();page++ ){
 				int endIndex = (page + 1 ) * listNumber - 1 >= data.size() ? data.size() : (page + 1 ) * listNumber;
 				List<Map<String,Object>> temp = data.subList(page * listNumber, endIndex);
-				FileUtil.writeFile(parentFolderPath + File.separator + (page + 1), temp);
+				if( temp.size() > 0 )
+					FileUtil.writeFile(parentFolderPath + File.separator + (page + 1), temp);
 			}
 		}
 	}
@@ -136,13 +138,9 @@ public class Utils {
 		if( !listGroupFile.exists() ) return null;
 		Map<String,File> checkFiles = new TreeMap<>(
 			new Comparator<String>() {
-				@Override public int compare(String o1, String o2) {
-					try{
+				@Override public int compare(String o1, String o2) { try{
 						return Integer.parseInt(o1) <= Integer.parseInt(o2) ? -1 : 1;
-					}catch(Exception e){
-						return 1;
-					}
-				}
+					}catch(Exception e){ return 1;}}
 		});
 		FileUtil.iteratorFile(checkFiles, listGroupFile,false);
 		List<Map<String,Object>> allMapList = new ArrayList<>();

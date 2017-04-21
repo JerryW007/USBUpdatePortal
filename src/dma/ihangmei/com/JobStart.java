@@ -23,7 +23,7 @@ public class JobStart {
 	public static void main(String[] args){
 		if(args.length == 0) return;
 		String portalRoot = args[0];
-		
+		//String portalRoot = "/Users/jerry/home/work/wfportal";
 		// 开始校验电影
 		CheckResult videoResult = VideoHandler.checkVideo(portalRoot);
 		if( !videoResult.isSuccess ) {

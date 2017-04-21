@@ -61,14 +61,14 @@ public class VarietyHandler {
 			int totalCount = checkResult.sourceNumbers.get("variety")[0] = listData.size();
 			// 缓存设备电影所以detail文件
 			Map<String, File> detailFiles = new HashMap<>();
-			FileUtil.iteratorFile(detailFiles, new File(varietyTargetRoot + "/detail/"), false);
+			FileUtil.iteratorFile(detailFiles, new File(varietyTargetRoot + "/detail/"), false,true);
 			// 校验
 			boolean needBackUp = false;
 			Iterator<Map<String, Object>> iterator = listData.iterator();
 			while (iterator.hasNext()) {
 				Map<String, Object> map = iterator.next();
 				//判断list对应的detail文件存不存在,不存在,删除对应的list索引
-				File detailFile = detailFiles.get(map.get("id") + "");
+				File detailFile = detailFiles.get(map.get("createTime") + File.separator + map.get("id"));
 				if (detailFile == null) {
 					needBackUp = true;
 					iterator.remove();

@@ -3,7 +3,6 @@ package dma.ihangmei.com;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,19 +13,20 @@ import dma.ihangmei.com.utils.FileUtil;
 import dma.ihangmei.com.utils.GsonUtil;
 import dma.ihangmei.com.utils.Utils;
 
+
 public class VideoHandler {
 
 	public static CheckResult checkResult = new CheckResult();
 	public final static DateFormat dfSimple = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	
-	public final static String[] paramItems = {"file","picture1"};
+	public final static String[] paramItems = {"file","image","image_hori"};
 
 	public static CheckResult checkVideo(String portalRoot) {
 		if (portalRoot == null)
 			return checkResult;
 
-		String videoTargetRoot = checkResult.portalIndexRoot = portalRoot + "/data/video";
+		String videoTargetRoot = checkResult.portalIndexRoot = portalRoot + "/data/appvideo";
 		// 统计增电影资源校验所耗时间
 		checkResult.checkStartDate = dfSimple.format(new Date(System.currentTimeMillis()));
 
@@ -40,18 +40,20 @@ public class VideoHandler {
 		
 		try {
 			// 收集数据
-			List<Map<String, Object>> listData = new ArrayList<>();
-			listData.addAll(GsonUtil.getListMap(GsonUtil.getStrFromFile(videoTargetRoot + "/list/1")));
+			List<Map<String, Object>> listData =  Utils.folderChildFilesToListMap(new File(videoTargetRoot + "/list"));
+			//listData.addAll(GsonUtil.getListMap(GsonUtil.getStrFromFile(videoTargetRoot + "/list/1")));
 			int totalCount = checkResult.sourceNumbers.get("video")[0] = listData.size();
 			// 缓存设备电影所以detail文件
 			Map<String, File> detailFiles = new HashMap<>();
-			FileUtil.iteratorFile(detailFiles, new File(videoTargetRoot + "/detail/"), false);
+			FileUtil.iteratorFile(detailFiles, new File(videoTargetRoot + "/detail/"), false,true);
 			// 校验
 			boolean needBackUp = false;
 			Iterator<Map<String, Object>> iterator = listData.iterator();
 			while (iterator.hasNext()) {
 				Map<String, Object> map = iterator.next();
-				File detailFile = detailFiles.get(map.get("id") + "");
+				String[] pathNodes = (map.get("fullUrl") + "").split(File.separator);
+				if(pathNodes.length <= 2) continue;
+				File detailFile = detailFiles.get(pathNodes[pathNodes.length - 2] + File.separator + pathNodes[pathNodes.length - 1]);
 				if (detailFile == null) {
 					needBackUp = true;
 					iterator.remove();
@@ -74,7 +76,7 @@ public class VideoHandler {
 				// 先备份一份,完成后删除
 				Utils.backUp(videoTargetRoot, videoTargetRoot+"_bak", "video");
 				
-				Utils.reWritePageList(videoTargetRoot + "/list/", 0, listData);
+				Utils.reWritePageList(videoTargetRoot + "/list/", 30, listData);
 			}
 		} catch (Exception e) {
 			checkResult.reports.add(Utils.getExInfo("", e));

@@ -67,19 +67,36 @@ public class FileUtil {
 	 * @param file
 	 */
 	public static void iteratorFile(Map<String, File> map,File file,boolean withFolder) {
+		iteratorFile(map, file, withFolder,false);
+	}
+	
+	/**
+	 * 遍历文件夹,获取所有文件，放到HashMap里面, 如果文件名重复，只考虑最后一个，其他会被忽略
+	 * @param map 遍历文件结果,file 要遍历的文件夹,withFolder 是否将文件夹遍历,addPathLevel key中包含的文件路径级别,0不包含路径,1包含一级路径...
+	 * @param file
+	 */
+	public static void iteratorFile(Map<String, File> map,File file,boolean withFolder,boolean withPath) {
 		try {
 			if( file.exists() && file.isDirectory() ) 
 				for( File f : file.listFiles() )
-					if( !f.isDirectory() ) 
-						map.put( f.getName(), f );
-					else{
+					if( !f.isDirectory() ){ 
+//						String[] pathLevels = f.getAbsolutePath().split(File.separator);
+//						if(addPathLevel > 0 && pathLevels.length > 0 && addPathLevel < pathLevels.length - 1){
+//							String pathLevel = "";
+//							for(int i=pathLevels.length;i>=pathLevels.length - addPathLevel;i--){
+//								pathLevel = File.separator + pathLevels[i-1] + pathLevel;
+//							}
+						if(withPath){
+							map.put(f.getParentFile().getName() + File.separator + f.getName(), f);
+						}else
+							map.put( f.getName(), f );
+					}else{
 						if( withFolder )
 							map.put( f.getName(), f );
-						iteratorFile( map, f, withFolder);
+						iteratorFile( map, f, withFolder,withPath);
 					}
 		} catch (Exception e) {}
 	}
-	
 	/**
 	 * 遍历文件夹,获取所有文件
 	 * @param map

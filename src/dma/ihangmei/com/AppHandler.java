@@ -59,16 +59,17 @@ public class AppHandler {
 		// 缓存设备APPS所以detail文件
 		String apkTargetRoot = portalRoot + "/data/" + apkFolderName;
 		Map<String, File> detailFiles = new HashMap<>();
-		FileUtil.iteratorFile(detailFiles, new File(apkTargetRoot + "/detail/"), false);
+		FileUtil.iteratorFile(detailFiles, new File(apkTargetRoot + "/detail/"), false,true);
 		
 		// 校验
 		boolean needBackUp = false;
 		Iterator<Map<String, Object>> iterator = listData.iterator();
 		while (iterator.hasNext()) {
 			Map<String, Object> map = iterator.next();
-			File detailFile = detailFiles.get(map.get("id") + "");
+			String[] pathNodes = (map.get("fullUrl") + "").split(File.separator);
+			if(pathNodes.length <= 2) continue;
+			File detailFile = detailFiles.get(pathNodes[pathNodes.length - 2] + File.separator + pathNodes[pathNodes.length - 1]);
 			if (detailFile == null) {
-				System.out.println("detail file not exit:" + map.get("id"));
 				needBackUp = true;
 				iterator.remove();
 				continue;
