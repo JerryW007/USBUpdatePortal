@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 public class Utils {
 	
 	public final static DateFormat dfSimple = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public final static DateFormat dfDayOnlyNoSeparator = new SimpleDateFormat("yyyyMMdd");
 	private Utils(){};
 	
 	public static String getExInfo(String s, Throwable e) {

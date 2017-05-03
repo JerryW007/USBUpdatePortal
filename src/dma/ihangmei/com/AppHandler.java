@@ -1,6 +1,7 @@
 package dma.ihangmei.com;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import dma.ihangmei.com.utils.FileUtil;
 import dma.ihangmei.com.utils.GsonUtil;
@@ -66,15 +68,20 @@ public class AppHandler {
 		Iterator<Map<String, Object>> iterator = listData.iterator();
 		while (iterator.hasNext()) {
 			Map<String, Object> map = iterator.next();
-			String[] pathNodes = (map.get("fullUrl") + "").split(File.separator);
-			if(pathNodes.length <= 2) continue;
-			File detailFile = detailFiles.get(pathNodes[pathNodes.length - 2] + File.separator + pathNodes[pathNodes.length - 1]);
+			if(map.get("createTime") == null || map.get("id") == null) continue;
+			String detailKey = "";
+			Utils.dfDayOnlyNoSeparator.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+			if((map.get("createTime")+"").toUpperCase().contains("E") || (map.get("createTime")+"").contains(".")){
+				Date createTime = new Date(Long.parseLong(new BigDecimal((double)map.get("createTime")).toPlainString()));
+				detailKey = Utils.dfDayOnlyNoSeparator.format(createTime) + File.separator + map.get("id");
+			}else
+				detailKey = Utils.dfDayOnlyNoSeparator.format(new Date(Long.parseLong(map.get("createTime") + ""))) + File.separator + map.get("id");
+			File detailFile = detailFiles.get(detailKey);
 			if (detailFile == null) {
 				needBackUp = true;
 				iterator.remove();
 				continue;
 			}
-
 			Map<String, Object> detailMap = GsonUtil.getMap(GsonUtil.getStrFromFile(detailFile));
 			String absolutePath = null;
 			for(String paramKey : paramItems) {

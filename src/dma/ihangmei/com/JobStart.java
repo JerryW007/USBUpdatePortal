@@ -23,9 +23,18 @@ public class JobStart {
 	public static void main(String[] args){
 		if(args.length == 0) return;
 		String portalRoot = args[0];
-		//String portalRoot = "/Users/jerry/home/work/wfportal";
-		// 开始校验电影
-		CheckResult videoResult = VideoHandler.checkVideo(portalRoot);
+//		String portalRoot = "/Users/jerry/home/work";
+		// 开始校验app电影
+		CheckResult appVideoResult = VideoHandler.checkVideo(portalRoot,"appvideo");
+		if( !appVideoResult.isSuccess ) {
+			System.out.println("appvideo unsuccess:" + GsonUtil.toJson(appVideoResult));
+			Utils.recover(portalRoot + "/data/appvideo_bak");
+			return;
+		}else
+			coutResult(appVideoResult);
+		
+		// 开始校验portal电影
+		CheckResult videoResult = VideoHandler.checkVideo(portalRoot,"video");
 		if( !videoResult.isSuccess ) {
 			System.out.println("video unsuccess:" + GsonUtil.toJson(videoResult));
 			Utils.recover(portalRoot + "/data/video_bak");
