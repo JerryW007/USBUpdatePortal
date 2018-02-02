@@ -31,7 +31,7 @@ public class AppHandler {
 
 		// 判断目的 apk 路径
 		if (!new File(apkTargetRoot).exists()) {
-			checkResult.reports.add(String.format("目的路径  %s 下索引文件夹不存在", apkTargetRoot));
+			checkResult.reports.add(String.format("target path:%s is not exist!", apkTargetRoot));
 			return checkResult;
 		} 
 

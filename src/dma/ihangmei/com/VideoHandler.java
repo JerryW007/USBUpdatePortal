@@ -35,7 +35,7 @@ public class VideoHandler {
 
 		// 判断目的 video 路径
 		if (!new File(videoTargetRoot).exists()) {
-			checkResult.reports.add(String.format("目的路径  %s 下 data 文件夹找不到", videoTargetRoot));
+			checkResult.reports.add(String.format("target path:%s/data is not exist!", videoTargetRoot));
 			return checkResult;
 		}
 		if(checkResult.sourceNumbers.get(modelRoot) == null) checkResult.sourceNumbers.put(modelRoot, new int[2]);

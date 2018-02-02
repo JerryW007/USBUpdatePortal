@@ -49,7 +49,7 @@ public class VarietyHandler {
 		
 		// 判断目的 variety 路径
 		if (!new File(varietyTargetRoot).exists()) {
-			checkResult.reports.add(String.format("目的路径  %s 下 data 文件夹找不到", varietyTargetRoot));
+			checkResult.reports.add(String.format("target path: %s/data is not exist!", varietyTargetRoot));
 			return checkResult;
 		}
 		if(checkResult.sourceNumbers.get("variety") == null) checkResult.sourceNumbers.put("variety", new int[2]);

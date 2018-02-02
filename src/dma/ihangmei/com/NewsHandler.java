@@ -26,13 +26,13 @@ public class NewsHandler {
 		try{
 			File newsListFile = new File(newsRoot + "/list");
 			if( !newsListFile.exists() || newsListFile.listFiles().length <= 0 ) {
-				System.out.println(newsRoot + "/list 找不到");
+				System.out.println("can't find "+newsRoot + "/list");
 				return;
 			}
 			// 缓存detail文件
 			File newsDetailFile =  new File(newsRoot + "/detail");
 			if( !newsDetailFile.exists() || newsDetailFile.listFiles().length <= 0 ){
-				System.out.println(newsRoot + "/detail 找不到");
+				System.out.println("can't find "+newsRoot + "/detail");
 				return;
 			}
 			Map<String,File> allDetailFiles = new HashMap<>();// key=文件名称,value=文件 直接可以按名字删除文件
@@ -67,10 +67,10 @@ public class NewsHandler {
 				Utils.reWritePageList(listChildFolder.getAbsolutePath(), 15, listChildFileData);//新闻模块暂定每页15条记录
 			}
 		}catch(Exception e){
-			System.out.println("异常信息:" + Utils.getExInfo("", e));
+			System.out.println("Exception:" + Utils.getExInfo("", e));
 			return;
 		}
-		System.out.println(String.format("删除老旧新闻成功,删除条数:%d,删除日期:",count,Utils.dfSimple.format(new Date())));
+		System.out.println(String.format("delete old news success! delete:%d,date:",count,Utils.dfSimple.format(new Date())));
 	}
 	
 }
